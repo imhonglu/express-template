@@ -1,0 +1,15 @@
+# temp
+*.swp
+
+# node dependency
+node_modules
+package-lock.json
+
+# development settings
+*.sqlite
+
+# build & deploy
+dist
+
+# vscode
+.vscode
