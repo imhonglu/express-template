@@ -10,7 +10,6 @@ import routes from '~/routes';
 import {
     sequelize,
     associations,
-    applyScopes,
 } from '~/models';
 import {
     BASE,
@@ -32,7 +31,6 @@ app.use(middlewares.errorHandler);
 
 async function sequelizeSync() {
     await associations();
-    await applyScopes();
     await sequelize.sync();
 }
 

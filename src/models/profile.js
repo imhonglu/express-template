@@ -2,7 +2,19 @@
 import { Model } from 'sequelize';
 
 export default function (sequelize, DataTypes) {
-    class Profile extends Model {}
+    class Profile extends Model {
+        static associate(models) {
+            models.Profile.belongsTo(models.Account, {
+                onDelete: 'CASCADE',
+                foreignKey: {
+                    name: 'accountId',
+                    allowNull: false,
+                    unique: true,
+                },
+            });
+        }
+    }
+
     Profile.init({
         photo: DataTypes.STRING,
         fullname: DataTypes.STRING,
@@ -30,17 +42,6 @@ export default function (sequelize, DataTypes) {
             defaultValue: false,
         },
     }, { sequelize });
-
-    Profile.associate = function (models) {
-        models.Profile.belongsTo(models.Account, {
-            onDelete: 'CASCADE',
-            foreignKey: {
-                name: 'accountId',
-                allowNull: false,
-                unique: true,
-            },
-        });
-    };
 
     return Profile;
 }

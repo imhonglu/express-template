@@ -22,15 +22,6 @@ const associations = () => {
     }
 };
 
-const applyScopes = () => {
-    for (const model of Object.values(sequelize.models)) {
-        if (model.applyScope) {
-            model.applyScope(models);
-        }
-    }
-};
-
 module.exports = models;
 module.exports.sequelize = sequelize;
 module.exports.associations = associations;
-module.exports.applyScopes = applyScopes;

@@ -18,13 +18,25 @@ const payloadAttributes = [
 
 export default function (sequelize, DataTypes) {
     class Account extends Model {
+        static associate(models) {
+            models.Account.hasOne(models.Profile, {
+                onDelete: 'CASCADE',
+                foreignKey: {
+                    name: 'accountId',
+                    allowNull: false,
+                    unique: true,
+                },
+                as: 'profile',
+            });
+        }
+
         verifyPassword(password) {
             return compare(password, this.password);
         }
 
         generateAccessToken() {
             const token = jwt.sign(
-                this.getPayload(),
+                this.payload,
                 AUTH.secretKey.accessToken,
                 AUTH.jwtOption.accessToken,
             );
@@ -33,7 +45,7 @@ export default function (sequelize, DataTypes) {
 
         async generateRefreshToken() {
             const refreshToken = jwt.sign(
-                this.getPayload(),
+                this.payload,
                 AUTH.secretKey.refreshToken,
                 AUTH.jwtOption.refreshToken,
             );
@@ -62,7 +74,7 @@ export default function (sequelize, DataTypes) {
             };
         }
 
-        getPayload() {
+        get payload() {
             const payload = payloadAttributes.reduce((acc, key) => {
                 acc[key] = this.dataValues[key];
                 return acc;
@@ -108,25 +120,12 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.BOOLEAN,
             defaultValue: true,
         },
-    }, { sequelize });
-
-    Account.associate = function (models) {
-        models.Account.hasOne(models.Profile, {
-            onDelete: 'CASCADE',
-            foreignKey: {
-                name: 'accountId',
-                allowNull: false,
-                unique: true,
-            },
-            as: 'profile',
-        });
-    };
-
-    Account.applyScope = function (models) {
-        models.Account.addScope('defaultScope', {
+    }, {
+        sequelize,
+        defaultScope: {
             include: ['profile'],
-        });
-    };
+        },
+    });
 
     return Account;
 }
