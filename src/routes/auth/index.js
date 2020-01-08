@@ -7,6 +7,6 @@ import {
 const router = Router();
 const routes = requireDirectory(({ caseName: 'none' }));
 
-autoRoutes({ router, routes });
+autoRoutes(router, routes);
 
 export default router;
